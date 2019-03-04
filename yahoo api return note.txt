@@ -1,0 +1,4 @@
+in json_data.chart.result[0].indicators.quote[0]
+data: high/open/volume/low/close
+
+json_data.chart.result[0].timestamp
