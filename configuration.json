@@ -1,0 +1,10 @@
+{
+	"pool": {
+				"host": "localhost", 
+				"user": "admin", 
+				"password": "web568", 
+				"database": "web568", 
+				"connectionLimit": 64 
+			},
+	"updateInterval": 3600
+}
