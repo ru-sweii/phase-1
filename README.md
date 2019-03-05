@@ -35,9 +35,12 @@ create table if not exists stocks(
 	open float, 
 	close float, 
 	volume float, 
+	type int,
 	primary key (s_timestamp, symbol)
 );
 ```
+Historical data is marked as type 0, realtime data is marked as type 1.
+
 Now we can use the data collector by executing the following command:
 ```bash
 node ./index.js
