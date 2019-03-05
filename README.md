@@ -28,7 +28,7 @@ The mysql connection configuration is stored in pool, and updateInterval is the 
 After building the database, create a table using the following statements:
 ```sql
 create table if not exists stocks(
-	s_timestamp timestamp, 
+	s_timestamp datetime, 
 	symbol varchar(10), 
 	high float, 
 	low float, 
