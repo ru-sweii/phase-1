@@ -21,8 +21,8 @@ var configuration = JSON.parse(fs.readFileSync(SQL_CONNECTION_CONFIG));
 pool = mysql.createPool(configuration.pool)
 
 function insert_into_sql(timestamp, symbol, high, low, open, close, volume, type) {
-	var sql = 'insert into stocks(s_timestamp, symbol, high, low, open, close, volume, type) values (from_unixtime({0}), "{1}", {2}, {3}, {4}, {5}, {6}, {7})';
-
+	var sql = 'insert into stocks(s_timestamp, symbol, high, low, open, close, volume, type) ';
+	sql +=    'values (from_unixtime({0}), "{1}", {2}, {3}, {4}, {5}, {6}, {7})';
 	pool.query(sql.format(timestamp, symbol, high, low, open, close, volume, type), function(err, result){
 		if (err) return;
 		console.log('1 record updated');
@@ -30,27 +30,13 @@ function insert_into_sql(timestamp, symbol, high, low, open, close, volume, type
 	
 }
 
-function stock_list() {
-	pool.query('select * from stocks order by s_timestamp desc limit 100;', function(err, result){
-		if(err) throw err;
-		rows =  JSON.parse(JSON.stringify(result));
-		for (var i = 0; i < rows.length; i++) {
-			console.log(rows[i].s_timestamp, rows[i].symbol, rows[i].high, rows[i].low, rows[i].open , rows[i].close , rows[i].volume);
-		}
-	});
-}
-
 function update_stock() {
-
 	console.log('Information update task pending...');
-	request_symbols = ['GOOG', 'AABA', 'WFC', 'C', 'BAC', 
-					   'GS', 'USB', 'JPM', 'PFE', 'INTC'];
-	for (var i = 0; i < request_symbols.length; i++) {
-		symbol = request_symbols[i];
+	for (var i = 0; i < configuration.request_symbols.length; i++) {
+		symbol = configuration.request_symbols[i];
 		stockdata.stock_realtime_data(symbol, insert_into_sql);
 		stockdata.stock_historical_data(symbol, insert_into_sql);
 	}
-	
 	console.log('Task assigned');
 }
 

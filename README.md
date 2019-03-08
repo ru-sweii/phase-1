@@ -15,15 +15,17 @@ Whatever username/password/database is using, make sure to save and modify the f
 {
 	"pool": {
 				"host": "localhost", 
-				"user": "stockuser", 
-				"password": "stockpasscode", 
-				"database": "finalproject", 
+				"user": "admin", 
+				"password": "web", 
+				"database": "web", 
 				"connectionLimit": 64 
 			},
+	"request_symbols": ["GOOG", "AABA", "WFC", "C", "BAC", 
+					    "GS", "USB", "JPM", "PFE", "INTC"],
 	"updateInterval": 3600
 }
 ```
-The mysql connection configuration is stored in pool, and updateInterval is the interval (in second) for collection.
+The mysql connection configuration is stored in pool, and updateInterval is the interval (in second) for collection. request_symbols store the stock symbols we are interested in.
 
 After building the database, create a table using the following statements:
 ```sql
@@ -41,8 +43,16 @@ create table if not exists stocks(
 ```
 Historical data is marked as type 0, realtime data is marked as type 1.
 
-Now we can use the data collector by executing the following command:
+Now we can use the data collector by executing the following command (Note that there is no "complete" output since it is a backend module):
+
 ```bash
 node ./index.js
 ```
+
+To retrieve data from database, execute the following command:
+
+```bash
+node ./stock_dump.js
+```
+
 It will keep running and updating information.

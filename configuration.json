@@ -6,5 +6,7 @@
 				"database": "web568", 
 				"connectionLimit": 64 
 			},
+	"request_symbols": ["GOOG", "AABA", "WFC", "C", "BAC", 
+					    "GS", "USB", "JPM", "PFE", "INTC"],
 	"updateInterval": 3600
 }
