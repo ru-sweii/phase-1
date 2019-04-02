@@ -1,11 +1,5 @@
 {
-	"pool": {
-				"host": "localhost", 
-				"user": "admin", 
-				"password": "web568", 
-				"database": "web568", 
-				"connectionLimit": 64 
-			},
+	"mongodb_location": "mongodb://localhost:27017/",
 	"request_symbols": ["GOOG", "AABA", "WFC", "C", "BAC", 
 					    "GS", "USB", "JPM", "PFE", "INTC"],
 	"updateInterval": 3600

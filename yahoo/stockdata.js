@@ -4,9 +4,20 @@ function fast_transfer(symbol, json_data, type, callback) {
 	quote = json_data.chart.result[0].indicators.quote[0];
 	timestamp = json_data.chart.result[0].timestamp;
 
+    result = []
+
 	for (var i = 0; i < timestamp.length; i++) {
-		callback(timestamp[i], symbol, quote.high[i], quote.low[i], quote.open[i], quote.close[i], quote.volume[i], type);
+		result.push({
+            'timestamp': new Date(timestamp[i]*1000), 
+            'symbol': symbol, 
+            'high': quote.high[i], 
+            'low': quote.low[i], 
+            'open': quote.open[i], 
+            'close': quote.close[i], 
+            'volume': quote.volume[i], 
+            _id: timestamp[i] + '_' + symbol});
 	}
+    callback(result);
 }
 
 function get_his_data(symbol, callback){

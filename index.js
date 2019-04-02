@@ -1,5 +1,5 @@
 var fs = require('fs');
-var mysql = require('mysql');
+var mongoclient = require('mongodb').MongoClient;
 var stockdata = require('./yahoo/stockdata');
 
 var SQL_CONNECTION_CONFIG = 'configuration.json';
@@ -18,14 +18,29 @@ if(!fs.existsSync(SQL_CONNECTION_CONFIG)) {
 	return;
 }
 var configuration = JSON.parse(fs.readFileSync(SQL_CONNECTION_CONFIG));
-pool = mysql.createPool(configuration.pool)
 
-function insert_into_sql(timestamp, symbol, high, low, open, close, volume, type) {
-	var sql = 'insert into stocks(s_timestamp, symbol, high, low, open, close, volume, type) ';
-	sql +=    'values (from_unixtime({0}), "{1}", {2}, {3}, {4}, {5}, {6}, {7})';
-	pool.query(sql.format(timestamp, symbol, high, low, open, close, volume, type), function(err, result){
-		if (err) return;
-		console.log('1 record updated');
+function insert_into_his_sql(result) {
+	mongoclient.connect(configuration.mongodb_location, {useNewUrlParser: true}, function(err, db){
+		if(err) throw err;
+		var dbo = db.db('web568');
+		dbo.collection('his_stocks').insertMany(result, function(err, res){
+			if(err) return;
+			console.log('{0} records updated.'.format(res.insertedCount));
+			db.close();
+		});
+	});
+	
+}
+
+function insert_into_liv_sql(result) {
+	mongoclient.connect(configuration.mongodb_location, {useNewUrlParser: true}, function(err, db){
+		if(err) throw err;
+		var dbo = db.db('web568');
+		dbo.collection('liv_stocks').insertMany(result, function(err, res){
+			if(err) return;
+			console.log('{0} records updated.'.format(res.insertedCount));
+			db.close();
+		});
 	});
 	
 }
@@ -34,8 +49,8 @@ function update_stock() {
 	console.log('Information update task pending...');
 	for (var i = 0; i < configuration.request_symbols.length; i++) {
 		symbol = configuration.request_symbols[i];
-		stockdata.stock_realtime_data(symbol, insert_into_sql);
-		stockdata.stock_historical_data(symbol, insert_into_sql);
+		stockdata.stock_realtime_data(symbol, insert_into_liv_sql);
+		stockdata.stock_historical_data(symbol, insert_into_his_sql);
 	}
 	console.log('Task assigned');
 }
